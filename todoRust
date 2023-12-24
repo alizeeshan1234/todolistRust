@@ -1,0 +1,60 @@
+#[derive(Debug)]
+struct Task {
+    task_description: String,
+    completed: bool,
+}
+#[derive(Debug)]
+struct TaskList {
+    tasks: Vec<Task>,
+}
+
+impl TaskList {
+    fn new() -> TaskList {
+        TaskList { tasks: Vec::new() }
+    }
+
+    fn add_task(&mut self, task_name: String, task_status: bool) {
+        let new_task = Task {
+            task_description: task_name,
+            completed: task_status,
+        };
+        self.tasks.push(new_task);
+    }
+
+    fn search_task(&mut self, task_name: &String) -> Option<&Task> {
+        for tasks in &self.tasks {
+            if &tasks.task_description == task_name {
+                return Some(tasks);
+            }
+        }
+        None
+    }
+
+    fn delete_task(&mut self, task_name: &String) -> Option<Task> {
+        let position = self
+            .tasks
+            .iter()
+            .position(|task| task.task_description == *task_name);
+        if let Some(index) = position {
+            let deleted_task = self.tasks.remove(index);
+            Some(deleted_task)
+        } else {
+            None
+        }
+    }
+}
+
+fn main() {
+    let mut my_tasks = TaskList::new();
+    my_tasks.add_task("Home Work".to_string(), true);
+    my_tasks.add_task("Gym".to_string(), false);
+    my_tasks.add_task("Programming".to_string(), true);
+    println!("{:?}", my_tasks);
+    my_tasks.delete_task(&"Programming".to_string());
+
+    let search_task = my_tasks.search_task(&"Programming".to_string());
+    match search_task {
+        Some(task) => println!("{:?}", task),
+        None => println!("No task Found!"),
+    }
+}
